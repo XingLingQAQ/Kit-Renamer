@@ -11,11 +11,13 @@ public class MainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if(!(sender instanceof Player player)) return false;
-
         FileConfiguration config = KitRenamer.getInstance().getConfig();
-            if(!player.hasPermission("kitrenamer.use")) return false;
+            if(!player.hasPermission("kitrenamer.use")){
+                Utils.playerMessage(player, "&cYou don't have permission to use this command.");
+                return false;
+            };
         MainMenu.openMainMenu(player);
-        return false;
+        return true;
     }
 
 }
