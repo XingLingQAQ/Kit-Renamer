@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -122,7 +123,11 @@ public class MenusListener implements Listener {
 
             }
         }
+    }
 
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event){
+        aSync.remove(event.getPlayer().getName());
     }
 
     @EventHandler
