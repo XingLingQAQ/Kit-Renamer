@@ -2,7 +2,6 @@ package com.system32.kitrenamer;
 
 import com.system32.kitrenamer.Menus.MainMenu;
 import com.system32.kitrenamer.Menus.ReplacementsMenu;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,8 +14,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -153,7 +150,7 @@ public class MenusListener implements Listener {
                 kitRenamer.saveConfig();
 
                 Future<Void> futureSetInv = kitRenamer.getServer().getScheduler().callSyncMethod(kitRenamer,
-                        () -> {  ReplacementsMenu.openMainMenu(player, Integer.parseInt(action.split(":")[2]));; return null; });
+                        () -> {  ReplacementsMenu.openMainMenu(player, Integer.parseInt(action.split(":")[2])); return null; });
                 try { futureSetInv.get(); }
                 catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
                 event.setCancelled(true);
