@@ -35,6 +35,8 @@ public class MainMenu {
 
         inventory.setItem(40, executeFormat());
 
+        inventory.setItem(44, replaceEverything());
+
         return inventory;
     }
 
@@ -57,7 +59,12 @@ public class MainMenu {
         return Utils.skullBuilder("&aExecute the Format", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTc5YTVjOTVlZTE3YWJmZWY0NWM4ZGMyMjQxODk5NjQ5NDRkNTYwZjE5YTQ0ZjE5ZjhhNDZhZWYzZmVlNDc1NiJ9fX0=","&a→ If you are done click to rename your items!");
     }
 
-
-
+    public static ItemStack replaceEverything(){
+        boolean condition = KitRenamer.getInstance().getConfig().getBoolean("replace-everything", false);
+        if(condition){
+            return Utils.skullBuilder("&aReplace Everything ignoring their item replacement", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWIwNjZlNjE2NzZhMGJiMTA0MzZiM2YxYjY2MjlhMTUyNjRmYzhjMGI5YzNjZmU3NmUzNmQ5MDc2YjE4ZWJhOSJ9fX0=", "&8• &fYou can replace everything ignoring their item type", "&8• &7Actual: &f"+ condition, "&a→ Click to change the replace everything");
+        }
+        return Utils.skullBuilder("&cReplace Everything ignoring their item replacement", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzc4MmE0ZTJiMjdmMDAzNjA2M2JkYjBlNzRjMWY3ZTYxMGNiNWFlZmQ1NWJhZWM5NWM3ZDkyZmRmYzQ2OWUxNyJ9fX0=", "&8• &fYou can replace everything ignoring their item type", "&8• &7Actual: &f"+ condition, "&a→ Click to change the replace everything");
+    }
 
 }

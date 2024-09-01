@@ -2,6 +2,7 @@ name: KitRenamer
 version: '${project.version}'
 main: com.system32.kitrenamer.KitRenamer
 api-version: '1.16'
+softdepend: [PlaceholderAPI]
 commands:
     kitrenamer:
         description: Rename a kit

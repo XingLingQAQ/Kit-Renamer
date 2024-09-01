@@ -2,6 +2,8 @@ package com.system32.kitrenamer;
 
 import com.system32.kitrenamer.Menus.MainMenu;
 import com.system32.kitrenamer.Menus.ReplacementsMenu;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -38,39 +40,64 @@ public class MenusListener implements Listener {
 
             String icon = item.getItemMeta().getDisplayName();
             FileConfiguration config = KitRenamer.getInstance().getConfig();
-            player.closeInventory();
+
             if(icon.equals(MainMenu.placeholder().getItemMeta().getDisplayName())){
+                player.closeInventory();
                 player.sendMessage(" ");
                 playerMessage(player, "Please type the new value for the placeholder");
                 aSync.put(player.getName(),"placeholder");
                 player.sendMessage(" ");
+
             }
             if(icon.equals(MainMenu.format().getItemMeta().getDisplayName())){
+                player.closeInventory();
                 player.sendMessage(" ");
                 playerMessage(player, "Please type the new value for the format");
                 aSync.put(player.getName(),"format");
                 player.sendMessage(" ");
             }
             if(icon.equals(MainMenu.replacements().getItemMeta().getDisplayName())){
+                player.closeInventory();
                 ReplacementsMenu.openMainMenu(player, 1);
             }
             if(icon.equals(MainMenu.reload().getItemMeta().getDisplayName())){
+                player.closeInventory();
                 playerMessage(player, "Config reloaded!");
                 KitRenamer.getInstance().reloadConfig();
             }
             if(icon.equals(MainMenu.executeFormat().getItemMeta().getDisplayName())){
+                player.closeInventory();
+                playerMessage(player, "Items formatted!");
                 for (ItemStack obj : player.getInventory()) {
                     if(obj == null) continue;
-                    for (String replacements : config.getConfigurationSection("replacements").getKeys(false)) {
-                        if(obj.getType().toString().toLowerCase().contains(replacements.toLowerCase())){
-                            ItemMeta itemMeta = obj.getItemMeta();
-                            itemMeta.setDisplayName(colorMessage(config.getString("format").replaceAll("%item%", config.getString("replacements." + replacements)).replaceAll("%placeholder%", config.getString("placeholder"))));
-                            obj.setItemMeta(itemMeta);
-
+                    if(KitRenamer.getInstance().getConfig().getBoolean("replace-everything", false)){
+                        ItemMeta itemMeta = obj.getItemMeta();
+                        String itemName = Utils.colorMessage(config.getString("format").replaceAll("%item%", obj.getType().toString()).replaceAll("%placeholder%", config.getString("placeholder")));
+                        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+                            itemName = PlaceholderAPI.setPlaceholders(player, itemName);
+                        itemMeta.setDisplayName(itemName);
+                        obj.setItemMeta(itemMeta);
+                    }else{
+                        for (String replacements : config.getConfigurationSection("replacements").getKeys(false)) {
+                            if(obj.getType().toString().toLowerCase().contains(replacements.toLowerCase())){
+                                ItemMeta itemMeta = obj.getItemMeta();
+                                String itemName = Utils.colorMessage(config.getString("format").replaceAll("%item%", config.getString("replacements." + replacements)).replaceAll("%placeholder%", config.getString("placeholder")));
+                                if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+                                    itemName = PlaceholderAPI.setPlaceholders(player, itemName);
+                                itemMeta.setDisplayName(itemName);
+                                obj.setItemMeta(itemMeta);
+                            }
                         }
                     }
+
                 }
-                playerMessage(player, "Items formatted!");
+            }
+
+            if(icon.equals(MainMenu.replaceEverything().getItemMeta().getDisplayName())){
+                boolean condition = KitRenamer.getInstance().getConfig().getBoolean("replace-everything", false);
+                KitRenamer.getInstance().getConfig().set("replace-everything", !condition);
+                KitRenamer.getInstance().saveConfig();
+                event.getClickedInventory().setItem(event.getSlot(), MainMenu.replaceEverything());
             }
 
         }
@@ -133,6 +160,7 @@ public class MenusListener implements Listener {
         if (aSync.containsKey(player.getName())) {
             KitRenamer kitRenamer = KitRenamer.getInstance();
             String action = aSync.get(player.getName());
+            System.out.println(action);
             event.setCancelled(true);
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 1);
             if(action.contains("regex")){
